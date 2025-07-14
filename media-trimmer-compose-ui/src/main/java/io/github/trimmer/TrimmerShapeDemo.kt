@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.InternalComposeApi
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,7 @@ fun TrimmerShapeDemo() {
 
     val trimmerState = rememberMediaTrimmerStateWithPlayer(
         player = player,
+        snapToFrame = true,
     )
 
     Column(
@@ -57,9 +59,13 @@ fun TrimmerShapeDemo() {
             state = trimmerState,
             modifier = Modifier.fillMaxWidth(0.9f),
             colors = TrimmerDefaults.colors(
-                containerBorderColor = Color.Transparent
+                containerBorderColor = Color.Transparent,
+                containerBackgroundColor = Color.Transparent,
             ),
-            style = TrimmerDefaults.style()
+            style = TrimmerDefaults.style(
+                trackHeight = 100.dp,
+                containerShadowElevation = 0.dp
+            )
         )
 
         Text(text = "Start: ${trimmerState.startMs} ms")

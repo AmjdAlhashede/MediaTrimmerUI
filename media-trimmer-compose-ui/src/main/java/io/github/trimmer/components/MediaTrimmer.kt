@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -69,19 +70,25 @@ fun MediaTrimmer(
             trackContent()
 
 
-            val startPx = remember(state.startMs, safeTrackWidthPx) {
-                if (state.durationMs == 0L) 0f
-                else (state.startMs.toFloat() / state.durationMs) * safeTrackWidthPx
+            val startPx by  remember(state.startMs, safeTrackWidthPx) {
+                derivedStateOf {
+                    if (state.durationMs == 0L) 0f
+                    else (state.startMs.toFloat() / state.durationMs) * safeTrackWidthPx
+                }
             }
 
-            val endPx = remember(state.endMs, safeTrackWidthPx) {
-                if (state.durationMs == 0L) 0f
-                (state.endMs.toFloat() / state.durationMs) * safeTrackWidthPx
+            val endPx by  remember(state.endMs, safeTrackWidthPx) {
+                derivedStateOf {
+                    if (state.durationMs == 0L) 0f
+                    (state.endMs.toFloat() / state.durationMs) * safeTrackWidthPx
+                }
             }
 
-            val playHeadPx = remember(state.progressMs, safeTrackWidthPx) {
-                if (state.durationMs == 0L) 0f
-                (state.progressMs.toFloat() / state.durationMs) * safeTrackWidthPx
+            val playHeadPx by  remember(state.progressMs, safeTrackWidthPx) {
+                derivedStateOf {
+                    if (state.durationMs == 0L) 0f
+                    (state.progressMs.toFloat() / state.durationMs) * safeTrackWidthPx
+                }
             }
 
             TrimmerOverlayAndPlayHead(
@@ -89,8 +96,7 @@ fun MediaTrimmer(
                 endPx = endPx,
                 playHeadPx = playHeadPx,
                 colors =  colors,
-                playHeadWidth = style.playHeadWidth,
-                selectionBorderWidth = style.selectionBorderWidth
+                style=style
             )
 
             TrimmerHandles(

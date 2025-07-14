@@ -1,4 +1,4 @@
-package io.github.trimmer.state
+package io.github.trimmer.extensions
 
 import android.os.Handler
 import android.os.Looper

@@ -36,8 +36,7 @@ internal object TrimmerTokens {
 
     val shadowElevation = 4.dp
     val containerCornerRadius = 16.dp
-    val handlerCornerRadius = 16.dp
-    val draggingCornerRadius = 10.dp
+    val selectionCornerRadius = 10.dp
     val draggingBorderWidth = 6.dp
     val containerContentPadding = 6.dp
     val pillHandleWidth = 10.dp
@@ -62,16 +61,17 @@ object TrimmerDefaults {
     val scheme: ColorScheme
         @Composable get() = MaterialTheme.colorScheme
 
+
     @Composable
     fun colors(
-        containerBackgroundColor: Color = scheme.surfaceVariant,
-        containerBorderColor: Color = scheme.outline,
-        handle: Color = scheme.primary,
-        selectionOverlay: Color = scheme.surfaceContainerLowest.copy(alpha = 0.3f),
-        selectionBorder: Color = scheme.primary.copy(alpha = 0.7f),
-        playHead: Color = scheme.secondary,
-        draggingOverlayColor: Color = scheme.tertiary.copy(alpha = 0.3f),
-        draggingBorderColor: Color = scheme.tertiary,
+        containerBackgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+        containerBorderColor: Color = MaterialTheme.colorScheme.outline,
+        handle: Color = MaterialTheme.colorScheme.primary,
+        selectionOverlay: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+        selectionBorder: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+        playHead: Color = MaterialTheme.colorScheme.secondary,
+        draggingOverlayColor: Color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.25f),
+        draggingBorderColor: Color = MaterialTheme.colorScheme.tertiary,
     ): TrimmerColors {
         return TrimmerColors(
             containerBackgroundColor = containerBackgroundColor,
@@ -84,6 +84,7 @@ object TrimmerDefaults {
             draggingBorderColor = draggingBorderColor,
         )
     }
+
 
     @Composable
     fun PillHandle(
@@ -142,8 +143,7 @@ object TrimmerDefaults {
         playHeadWidth: Dp = TrimmerTokens.playHeadWidth,
         containerCornerRadius: Dp = TrimmerTokens.containerCornerRadius,
         containerShadowElevation: Dp = TrimmerTokens.shadowElevation,
-        handlerCornerRadius: Dp = TrimmerTokens.handlerCornerRadius,
-        draggingCornerRadius: Dp = TrimmerTokens.draggingCornerRadius,
+        selectionCornerRadius: Dp = TrimmerTokens.selectionCornerRadius,
         draggingBorderWidth: Dp = TrimmerTokens.draggingBorderWidth,
         containerContentPadding: Dp = TrimmerTokens.containerContentPadding,
         containerBorderWidth: Dp = TrimmerTokens.containerBorderWidth,
@@ -156,8 +156,7 @@ object TrimmerDefaults {
             playHeadWidth = playHeadWidth,
             containerCornerRadius = containerCornerRadius,
             containerShadowElevation = containerShadowElevation,
-            handlerCornerRadius = handlerCornerRadius,
-            draggingCornerRadius = draggingCornerRadius,
+            selectionCornerRadius = selectionCornerRadius,
             draggingBorderWidth = draggingBorderWidth,
             containerContentPadding = containerContentPadding,
             containerBorderWidth = containerBorderWidth,

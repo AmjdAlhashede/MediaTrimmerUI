@@ -9,6 +9,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.media3.common.Player
+import io.github.trimmer.extensions.currentPositionFlow
+import io.github.trimmer.extensions.durationFlow
+import io.github.trimmer.extensions.snapToFrame
 import kotlinx.coroutines.flow.firstOrNull
 
 
@@ -65,13 +68,9 @@ class MediaTrimmerState internal constructor(
         val clampedEnd = newEndMs.coerceIn(newStartMs + min, durationMs)
         val clampedStart = newStartMs.coerceIn(0, clampedEnd - min)
 
-        if (snapToFrame) {
-            startMs = (clampedStart / frameIntervalMs) * frameIntervalMs
-            endMs = (clampedEnd / frameIntervalMs) * frameIntervalMs
-        } else {
-            startMs = clampedStart
-            endMs = clampedEnd
-        }
+        startMs = clampedStart.let { if (snapToFrame) it.snapToFrame(frameIntervalMs) else it }
+        endMs = clampedEnd.let { if (snapToFrame) it.snapToFrame(frameIntervalMs) else it }
+
         updateProgress()
     }
 
