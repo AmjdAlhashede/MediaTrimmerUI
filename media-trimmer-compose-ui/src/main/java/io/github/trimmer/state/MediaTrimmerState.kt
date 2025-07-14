@@ -1,0 +1,109 @@
+package io.github.trimmer.state
+
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.media3.common.Player
+import kotlinx.coroutines.flow.firstOrNull
+
+
+
+@Composable
+fun rememberMediaTrimmerState(
+    durationMs: Long,
+    initialStartMs: Long = 0L,
+    initialEndMs: Long?=null,
+    snapToFrame: Boolean = false,
+    frameIntervalMs: Long = 1000L,
+    minTrimDurationMs: Long = 1000L,
+): MediaTrimmerState {
+    return remember {
+        MediaTrimmerState(
+            durationMs, initialStartMs, initialEndMs,
+            snapToFrame, frameIntervalMs, minTrimDurationMs
+        )
+    }
+}
+
+
+
+@Stable
+class MediaTrimmerState internal constructor(
+    durationStartMs: Long,
+    initialStartMs: Long,
+    initialEndMs: Long? = null,
+    val snapToFrame: Boolean,
+    val frameIntervalMs: Long,
+    val minTrimDurationMs: Long,
+    initialProgressMs: Long = initialStartMs,
+) {
+    var durationMs by mutableLongStateOf(durationStartMs)
+        private set
+
+    var startMs by mutableLongStateOf(initialStartMs)
+        private set
+
+    var endMs by mutableLongStateOf(initialEndMs?:durationStartMs)
+        private set
+
+    var progressMs by mutableLongStateOf(initialProgressMs)
+        internal set
+
+    var isProcessing by mutableStateOf(false)
+
+
+    var isUserSeeking by mutableStateOf(false)
+        internal set
+
+    fun update(newStartMs: Long, newEndMs: Long) {
+        val min = if (durationMs < minTrimDurationMs) durationMs else minTrimDurationMs
+        val clampedEnd = newEndMs.coerceIn(newStartMs + min, durationMs)
+        val clampedStart = newStartMs.coerceIn(0, clampedEnd - min)
+
+        if (snapToFrame) {
+            startMs = (clampedStart / frameIntervalMs) * frameIntervalMs
+            endMs = (clampedEnd / frameIntervalMs) * frameIntervalMs
+        } else {
+            startMs = clampedStart
+            endMs = clampedEnd
+        }
+        updateProgress()
+    }
+
+    fun updateProgress(newProgressMs: Long = progressMs) {
+        progressMs = newProgressMs.coerceIn(startMs, endMs)
+    }
+
+    fun updateDuration(newDuration: Long) {
+        durationMs = newDuration.coerceAtLeast(1L)
+    }
+
+    suspend fun observe(player: Player, initialEndMs: Long?, initialStartMs: Long) {
+        val realDuration = player.durationFlow.firstOrNull { it > 0L } ?: return
+
+        updateDuration(realDuration)
+        val finalEndMs = (initialEndMs?.coerceAtMost(realDuration) ?: realDuration)
+        val finalStartMs = initialStartMs.coerceIn(0L, finalEndMs)
+        update(finalStartMs, finalEndMs)
+
+        player.seekTo(finalStartMs)
+        player.playWhenReady = true
+
+        player.currentPositionFlow().collect { newPosition ->
+            if (!isUserSeeking) {
+                if (newPosition < startMs || newPosition > endMs) {
+                    player.pause()
+                    player.seekTo(startMs)
+                    updateProgress(startMs)
+                }else{
+                    updateProgress(newPosition)
+                }
+            }
+        }
+    }
+}
