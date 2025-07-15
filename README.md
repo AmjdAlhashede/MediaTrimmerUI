@@ -17,5 +17,19 @@ This library focuses purely on the **UI layer**, giving you full control over th
 - **Media-agnostic**: visualize your content however you like (waveform, thumbnails, etc.)
 
 
-**License: Apache License 2.0**  
+## Installation
+
+To start using MediaTrimmer Compose UI, simply add the following dependency to your app-level build.gradle.kts file:  
+```kotlin
+implementation("io.github.amjdalhashede:mediatrimmer-compose-ui:1.0.0-alpha2")
+``` 
+
+Or in Gradle Groovy DSL `build.gradle`:
+
+```groovy
+implementation 'io.github.amjdalhashede:mediatrimmer-compose-ui:1.0.0-alpha2'
+```
+
+
+## License: Apache License 2.0 
 [See LICENSE file for details](./LICENSE)
