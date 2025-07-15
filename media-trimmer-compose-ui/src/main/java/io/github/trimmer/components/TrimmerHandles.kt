@@ -73,12 +73,9 @@ internal fun TrimmerHandles(
 ) {
     val minDistancePx = (state.minTrimDurationMs.toFloat() / state.durationMs) * trackWidthPx
     val selectionDuration = state.endMs - state.startMs
-
-    val draggingColor = colors.draggingOverlayColor
     val draggingBorderColor = colors.draggingBorderColor
     val draggingBorderWidth = style.draggingBorderWidth
     val defaultBorderColor = colors.selectionBorder
-    val defaultHandleColor = colors.handle
     val defaultBorderWidth = style.selectionBorderWidth
 
     var draggingHandle by remember { mutableStateOf<HandleType?>(null) }
@@ -119,7 +116,10 @@ internal fun TrimmerHandles(
         state.update(state.startMs, newEndMs.toLong())
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
         // Draggable selection box
         Box(
             modifier = Modifier
@@ -156,32 +156,12 @@ internal fun TrimmerHandles(
                 )
         )
 
+
         // Start handle
-        Box(
-            modifier = Modifier
+        startHandle(
+            Modifier
                 .align(Alignment.CenterStart)
                 .offset(x = animatedStartOffset - style.handleWidth / 2)
-                .background(
-                    color = draggingHandle.backgroundColorFor(
-                        HandleType.START,
-                        draggingColor,
-                        defaultHandleColor
-                    ),
-                    shape = CircleShape
-                )
-                .border(
-                    width = draggingHandle.borderWidthFor(
-                        HandleType.START,
-                        draggingBorderWidth,
-                        defaultBorderWidth
-                    ),
-                    color = draggingHandle.borderColorFor(
-                        HandleType.START,
-                        draggingBorderColor,
-                        defaultBorderColor
-                    ),
-                    shape = CircleShape
-                )
                 .draggable(
                     orientation = Orientation.Horizontal,
                     state = startDraggableState,
@@ -196,36 +176,13 @@ internal fun TrimmerHandles(
                         draggingHandle = null
                     }
                 )
-        ) {
-            startHandle(Modifier)
-        }
+        )
 
         // End handle
-        Box(
-            modifier = Modifier
+        endHandle(
+            Modifier
                 .align(Alignment.CenterStart)
                 .offset(x = animatedEndOffset - style.handleWidth / 2)
-                .background(
-                    color = draggingHandle.backgroundColorFor(
-                        HandleType.END,
-                        draggingColor,
-                        defaultHandleColor
-                    ),
-                    shape = CircleShape
-                )
-                .border(
-                    width = draggingHandle.borderWidthFor(
-                        HandleType.END,
-                        draggingBorderWidth,
-                        defaultBorderWidth
-                    ),
-                    color = draggingHandle.borderColorFor(
-                        HandleType.END,
-                        draggingBorderColor,
-                        defaultBorderColor
-                    ),
-                    shape = CircleShape
-                )
                 .draggable(
                     orientation = Orientation.Horizontal,
                     state = endDraggableState,
@@ -240,9 +197,7 @@ internal fun TrimmerHandles(
                         draggingHandle = null
                     }
                 )
-        ) {
-            endHandle(Modifier)
-        }
+        )
 
         Box(
             modifier = Modifier
@@ -283,17 +238,11 @@ internal fun TrimmerHandles(
     }
 }
 
+
 private enum class HandleType {
     START, END, SELECTION
 }
 
-private fun HandleType?.backgroundColorFor(
-    handleType: HandleType,
-    draggingColor: Color,
-    defaultColor: Color,
-): Color {
-    return if (this == handleType) draggingColor else defaultColor
-}
 
 private fun HandleType?.borderWidthFor(
     handleType: HandleType,

@@ -41,7 +41,6 @@ data class TrimmerStyle(
     val playHeadWidth: Dp,
     val selectionCornerRadius: Dp,
     val containerCornerRadius: Dp,
-    val containerShadowElevation: Dp,
     val containerBorderWidth : Dp,
     val draggingBorderWidth: Dp,
     val containerContentPadding : Dp,
