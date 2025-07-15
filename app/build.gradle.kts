@@ -11,6 +11,7 @@ android {
     defaultConfig {
         applicationId = "io.github.mediatrimmer"
         minSdk = 21
+        //noinspection OldTargetApi
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -42,7 +43,7 @@ android {
 
 dependencies {
 
-    implementation(project (":media-trimmer-compose-ui"))
+    implementation(libs.mediatrimmer.compose.ui)
     implementation(libs.bundles.media3.local)
     implementation(libs.bundles.coil3)
     implementation(libs.androidx.core.ktx)

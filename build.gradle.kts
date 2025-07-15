@@ -8,8 +8,8 @@ plugins {
 }
 
 
-group = "io.github.amjdalhashede"
-version = "1.0.0-alpha1"
+group = libs.versions.libGroup.get()
+version = libs.versions.libVersion.get()
 
 nexusPublishing {
     repositories {

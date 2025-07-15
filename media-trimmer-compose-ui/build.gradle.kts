@@ -6,9 +6,8 @@ plugins {
     signing
 }
 
-
-group = "io.github.amjdalhashede"
-version = "1.0.0-alpha1"
+group = libs.versions.libGroup.get()
+version = libs.versions.libVersion.get()
 
 android {
     namespace = "io.github.amjdalhashede.mediatrimmer.compose.ui"
@@ -48,26 +47,14 @@ android {
     }
 }
 
-dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.material3)
-
-    compileOnly(libs.androidx.media3.exoplayer)
-}
-
-
 afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = "io.github.amjdalhashede"
+                groupId = libs.versions.libGroup.get()
                 artifactId = "mediatrimmer-compose-ui"
-                version = "1.0.0-alpha1"
+                version = libs.versions.libVersion.get()
 
                 pom {
                     name.set("MediaTrimmer Compose UI")
@@ -115,4 +102,17 @@ afterEvaluate {
         sign(publishing.publications["release"])
     }
 }
+
+dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.material3)
+
+    compileOnly(libs.androidx.media3.exoplayer)
+}
+
+
 
