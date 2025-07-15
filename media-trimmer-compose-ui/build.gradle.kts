@@ -8,7 +8,7 @@ plugins {
 
 
 group = "io.github.amjdalhashede"
-version = "1.0.0-alpha"
+version = "1.0.0-alpha1"
 
 android {
     namespace = "io.github.amjdalhashede.mediatrimmer.compose.ui"
@@ -51,21 +51,12 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    compileOnly(libs.bundles.media3.local)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    compileOnly(libs.androidx.media3.exoplayer)
 }
 
 
@@ -76,7 +67,7 @@ afterEvaluate {
                 from(components["release"])
                 groupId = "io.github.amjdalhashede"
                 artifactId = "mediatrimmer-compose-ui"
-                version = "1.0.0-alpha"
+                version = "1.0.0-alpha1"
 
                 pom {
                     name.set("MediaTrimmer Compose UI")
@@ -109,25 +100,11 @@ afterEvaluate {
 
         repositories {
             maven {
-                name = "myrepo"
-                url = uri(layout.buildDirectory.dir("repo"))
-            }
-            maven {
                 name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/AmjdAlhashede/MediaTrimmerUI") // ✅ هذا هو التعديل الصحيح
+                url = uri("https://maven.pkg.github.com/AmjdAlhashede/MediaTrimmerUI")
                 credentials {
-                    username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME_GITHUB")
-                    password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN_GITHUB")
-                }
-            }
-            maven {
-                name = "Sonatype"
-                url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
-//                url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-//                url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                credentials {
-                    username = project.findProperty("ossrhUsername") as String?
-                    password = project.findProperty("ossrhPassword") as String?
+                    username = project.findProperty("gpr.user") as String?
+                    password = project.findProperty("gpr.key") as String?
                 }
             }
         }
@@ -139,11 +116,3 @@ afterEvaluate {
     }
 }
 
-tasks.register<Zip>("generateRepoZip") {
-    dependsOn("publishReleasePublicationToMyrepoRepository")
-
-    from(layout.buildDirectory.dir("repo"))
-
-    archiveFileName.set("mediatrimmer-compose-ui-1.0.0-alpha.zip")
-    destinationDirectory.set(layout.buildDirectory.dir("outputs"))
-}
