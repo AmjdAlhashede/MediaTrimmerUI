@@ -19,8 +19,10 @@ package io.github.trimmer.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import io.github.trimmer.style.TrimmerColors
 import io.github.trimmer.style.TrimmerStyle
@@ -43,7 +45,9 @@ internal fun TrimmerOverlayAndPlayHead(
     style: TrimmerStyle,
 ) {
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
+    Canvas(modifier = Modifier.fillMaxSize()
+        .clip(RoundedCornerShape(style.selectionCornerRadius))
+    ) {
         val cornerRadius = style.selectionCornerRadius.toPx()
         drawRoundRect(
             color = colors.containerBackgroundColor.copy(alpha = 0.5f),
