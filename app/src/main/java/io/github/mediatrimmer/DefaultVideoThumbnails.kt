@@ -1,9 +1,26 @@
-package io.github
+/*
+ *  Copyright 2025 Amjd Alhashede
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
 
-import android.graphics.Bitmap
+package io.github.mediatrimmer
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,13 +36,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import io.github.helper.VideoFrameExtractor
 import io.github.trimmer.state.MediaTrimmerState
 import androidx.compose.ui.graphics.painter.Painter
-import coil3.Uri
 
 @Composable
 fun DefaultVideoThumbnails(
@@ -81,7 +96,7 @@ fun DefaultVideoThumbnails(
         } else {
             Row(
                 modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 thumbnails.forEach { painter -> // <--- Change 4: Iterate over Painters
                     Image(
