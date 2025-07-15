@@ -1,4 +1,4 @@
-package io.github.trimmer.components
+package io.github
 
 import androidx.annotation.OptIn
 import androidx.compose.material.icons.Icons
@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.compose.state.rememberPlayPauseButtonState
+
 
 @OptIn(UnstableApi::class)
 @Composable
