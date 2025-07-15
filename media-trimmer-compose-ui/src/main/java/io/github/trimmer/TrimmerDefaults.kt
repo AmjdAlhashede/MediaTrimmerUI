@@ -1,3 +1,20 @@
+/*
+ *  Copyright 2025 Amjd Alhashede
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
 package io.github.trimmer
 
 import androidx.compose.foundation.Canvas
@@ -61,6 +78,34 @@ object TrimmerDefaults {
     val scheme: ColorScheme
         @Composable get() = MaterialTheme.colorScheme
 
+    @Composable
+    fun style(
+        handleWidth: Dp = TrimmerTokens.handleWidth,
+        handlerHeight: Dp = TrimmerTokens.handlerHeight,
+        trackHeight: Dp = TrimmerTokens.trackHeight,
+        playHeadWidth: Dp = TrimmerTokens.playHeadWidth,
+        containerCornerRadius: Dp = TrimmerTokens.containerCornerRadius,
+        containerShadowElevation: Dp = TrimmerTokens.shadowElevation,
+        selectionCornerRadius: Dp = TrimmerTokens.selectionCornerRadius,
+        draggingBorderWidth: Dp = TrimmerTokens.draggingBorderWidth,
+        containerContentPadding: Dp = TrimmerTokens.containerContentPadding,
+        containerBorderWidth: Dp = TrimmerTokens.containerBorderWidth,
+        selectionBorderWidth: Dp = TrimmerTokens.selectionBorderWidth,
+    ): TrimmerStyle {
+        return TrimmerStyle(
+            handleWidth = handleWidth,
+            handlerHeight = handlerHeight,
+            trackHeight = trackHeight,
+            playHeadWidth = playHeadWidth,
+            containerCornerRadius = containerCornerRadius,
+            containerShadowElevation = containerShadowElevation,
+            selectionCornerRadius = selectionCornerRadius,
+            draggingBorderWidth = draggingBorderWidth,
+            containerContentPadding = containerContentPadding,
+            containerBorderWidth = containerBorderWidth,
+            selectionBorderWidth = selectionBorderWidth
+        )
+    }
 
     @Composable
     fun colors(
@@ -109,7 +154,7 @@ object TrimmerDefaults {
     @Composable
     fun DefaultWaveform(
         modifier: Modifier = Modifier,
-        color: Color =colors().handle.copy(0.5f),
+        color: Color = colors().handle.copy(0.5f),
         waveformData: List<Float> = remember {
             List(100) { Random.nextFloat() * 0.9f + 0.1f }
         },
@@ -135,32 +180,5 @@ object TrimmerDefaults {
         }
     }
 
-    @Composable
-    fun style(
-        handleWidth: Dp = TrimmerTokens.handleWidth,
-        handlerHeight: Dp = TrimmerTokens.handlerHeight,
-        trackHeight: Dp = TrimmerTokens.trackHeight,
-        playHeadWidth: Dp = TrimmerTokens.playHeadWidth,
-        containerCornerRadius: Dp = TrimmerTokens.containerCornerRadius,
-        containerShadowElevation: Dp = TrimmerTokens.shadowElevation,
-        selectionCornerRadius: Dp = TrimmerTokens.selectionCornerRadius,
-        draggingBorderWidth: Dp = TrimmerTokens.draggingBorderWidth,
-        containerContentPadding: Dp = TrimmerTokens.containerContentPadding,
-        containerBorderWidth: Dp = TrimmerTokens.containerBorderWidth,
-        selectionBorderWidth: Dp = TrimmerTokens.selectionBorderWidth
-    ): TrimmerStyle {
-        return TrimmerStyle(
-            handleWidth = handleWidth,
-            handlerHeight = handlerHeight,
-            trackHeight = trackHeight,
-            playHeadWidth = playHeadWidth,
-            containerCornerRadius = containerCornerRadius,
-            containerShadowElevation = containerShadowElevation,
-            selectionCornerRadius = selectionCornerRadius,
-            draggingBorderWidth = draggingBorderWidth,
-            containerContentPadding = containerContentPadding,
-            containerBorderWidth = containerBorderWidth,
-            selectionBorderWidth = selectionBorderWidth
-        )
-    }
+
 }

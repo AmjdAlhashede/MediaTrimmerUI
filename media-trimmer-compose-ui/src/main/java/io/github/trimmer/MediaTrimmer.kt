@@ -1,8 +1,24 @@
-package io.github.trimmer.components
+/*
+ *  Copyright 2025 Amjd Alhashede
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *
+ */
+
+package io.github.trimmer
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,7 +30,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
-import io.github.trimmer.TrimmerDefaults
+import io.github.trimmer.components.TrimmerHandles
+import io.github.trimmer.components.TrimmerOverlayAndPlayHead
+import io.github.trimmer.components.TrimmerSurface
 import io.github.trimmer.state.MediaTrimmerState
 import io.github.trimmer.style.TrimmerColors
 import io.github.trimmer.style.TrimmerStyle
@@ -43,10 +61,8 @@ fun MediaTrimmer(
     endHandle: @Composable (modifier: Modifier) -> Unit = {
         TrimmerDefaults.PillHandle(modifier = it)
     },
-    trackContent: @Composable BoxScope.() -> Unit = {
-        TrimmerDefaults.DefaultWaveform(
-            modifier = Modifier.fillMaxSize(),
-        )
+    trackContent: @Composable BoxScope.(state: MediaTrimmerState) -> Unit = { state ->
+        TrimmerDefaults.DefaultWaveform()
     },
 ) {
     var trackWidthPx by remember { mutableFloatStateOf(0f) }
@@ -67,24 +83,24 @@ fun MediaTrimmer(
         ) {
             val safeTrackWidthPx = if (trackWidthPx < 1f) 1f else trackWidthPx
 
-            trackContent()
+            trackContent(state)
 
 
-            val startPx by  remember(state.startMs, safeTrackWidthPx) {
+            val startPx by remember(state.startMs, safeTrackWidthPx) {
                 derivedStateOf {
                     if (state.durationMs == 0L) 0f
                     else (state.startMs.toFloat() / state.durationMs) * safeTrackWidthPx
                 }
             }
 
-            val endPx by  remember(state.endMs, safeTrackWidthPx) {
+            val endPx by remember(state.endMs, safeTrackWidthPx) {
                 derivedStateOf {
                     if (state.durationMs == 0L) 0f
                     (state.endMs.toFloat() / state.durationMs) * safeTrackWidthPx
                 }
             }
 
-            val playHeadPx by  remember(state.progressMs, safeTrackWidthPx) {
+            val playHeadPx by remember(state.progressMs, safeTrackWidthPx) {
                 derivedStateOf {
                     if (state.durationMs == 0L) 0f
                     (state.progressMs.toFloat() / state.durationMs) * safeTrackWidthPx
@@ -95,8 +111,8 @@ fun MediaTrimmer(
                 startPx = startPx,
                 endPx = endPx,
                 playHeadPx = playHeadPx,
-                colors =  colors,
-                style=style
+                colors = colors,
+                style = style
             )
 
             TrimmerHandles(
