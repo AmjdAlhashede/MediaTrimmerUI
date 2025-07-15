@@ -19,9 +19,11 @@ package io.github.trimmer
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -29,7 +31,9 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import io.github.trimmer.components.TrimmerHandles
 import io.github.trimmer.components.TrimmerOverlayAndPlayHead
 import io.github.trimmer.components.TrimmerSurface
@@ -62,15 +66,17 @@ fun MediaTrimmer(
         TrimmerDefaults.PillHandle(modifier = it)
     },
     trackContent: @Composable BoxScope.(state: MediaTrimmerState) -> Unit = { state ->
-        TrimmerDefaults.DefaultWaveform()
+        TrimmerDefaults.DefaultWaveform(
+            modifier = Modifier.fillMaxSize()
+        )
     },
 ) {
-    var trackWidthPx by remember { mutableFloatStateOf(0f) }
 
+    var trackWidthPx by remember { mutableFloatStateOf(0f) }
     TrimmerSurface(
         modifier = modifier
             .fillMaxWidth()
-            .height(style.trackHeight + style.containerContentPadding * 3),
+            .height(style.trackHeight + style.containerContentPadding * 2),
         style = style,
         colors = colors,
     ) {
@@ -83,7 +89,12 @@ fun MediaTrimmer(
         ) {
             val safeTrackWidthPx = if (trackWidthPx < 1f) 1f else trackWidthPx
 
-            trackContent(state)
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(style.selectionCornerRadius))
+            ) {
+                trackContent(state)
+            }
 
 
             val startPx by remember(state.startMs, safeTrackWidthPx) {
@@ -100,9 +111,11 @@ fun MediaTrimmer(
                 }
             }
 
-            val playHeadPx by remember(state.progressMs, safeTrackWidthPx) {
+            val playHeadPx by remember(
+                state.progressMs,safeTrackWidthPx 
+            ) {
                 derivedStateOf {
-                    if (state.durationMs == 0L) 0f
+                    if (state.durationMs == 0L) return@derivedStateOf 0f
                     (state.progressMs.toFloat() / state.durationMs) * safeTrackWidthPx
                 }
             }
