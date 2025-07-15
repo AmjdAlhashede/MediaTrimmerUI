@@ -51,7 +51,7 @@ internal object TrimmerTokens {
     val handlerHeight = 60.dp
     val containerBorderWidth = 2.dp
 
-    val shadowElevation = 4.dp
+    val shadowElevation = 0.dp
     val containerCornerRadius = 16.dp
     val selectionCornerRadius = 10.dp
     val draggingBorderWidth = 6.dp
@@ -64,8 +64,6 @@ internal object TrimmerTokens {
     // Waveform defaults
     const val WAVE_FORM_BAR_SPACING = 2f
     const val WAVE_FORM_MAX_BAR_HEIGHT_FACTOR = 0.9f
-
-
 }
 
 /**
@@ -85,7 +83,6 @@ object TrimmerDefaults {
         trackHeight: Dp = TrimmerTokens.trackHeight,
         playHeadWidth: Dp = TrimmerTokens.playHeadWidth,
         containerCornerRadius: Dp = TrimmerTokens.containerCornerRadius,
-        containerShadowElevation: Dp = TrimmerTokens.shadowElevation,
         selectionCornerRadius: Dp = TrimmerTokens.selectionCornerRadius,
         draggingBorderWidth: Dp = TrimmerTokens.draggingBorderWidth,
         containerContentPadding: Dp = TrimmerTokens.containerContentPadding,
@@ -98,7 +95,6 @@ object TrimmerDefaults {
             trackHeight = trackHeight,
             playHeadWidth = playHeadWidth,
             containerCornerRadius = containerCornerRadius,
-            containerShadowElevation = containerShadowElevation,
             selectionCornerRadius = selectionCornerRadius,
             draggingBorderWidth = draggingBorderWidth,
             containerContentPadding = containerContentPadding,
@@ -109,14 +105,14 @@ object TrimmerDefaults {
 
     @Composable
     fun colors(
-        containerBackgroundColor: Color = MaterialTheme.colorScheme.surfaceVariant,
-        containerBorderColor: Color = MaterialTheme.colorScheme.outline,
-        handle: Color = MaterialTheme.colorScheme.primary,
-        selectionOverlay: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-        selectionBorder: Color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
-        playHead: Color = MaterialTheme.colorScheme.secondary,
-        draggingOverlayColor: Color = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.25f),
-        draggingBorderColor: Color = MaterialTheme.colorScheme.tertiary,
+        containerBackgroundColor: Color = scheme.surfaceVariant,
+        containerBorderColor: Color = scheme.outline,
+        handle: Color = scheme.primary,
+        selectionOverlay: Color = scheme.primary.copy(alpha = 0.15f),
+        selectionBorder: Color = scheme.primary.copy(alpha = 0.7f),
+        playHead: Color = scheme.secondary,
+        draggingOverlayColor: Color = scheme.tertiary.copy(alpha = 0.25f),
+        draggingBorderColor: Color = scheme.tertiary,
     ): TrimmerColors {
         return TrimmerColors(
             containerBackgroundColor = containerBackgroundColor,
