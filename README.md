@@ -1,35 +1,122 @@
-# MediaTrimmer Compose UI
+# MediaTrimmer Compose UI 🎬
 
-A lightweight and modern UI component for trimming audio and video in Android apps, built entirely with Jetpack Compose.
+A lightweight and flexible UI toolkit for trimming **audio** and **video** in Android apps — built entirely with **Jetpack Compose**.
 
-This library focuses purely on the **UI layer**, giving you full control over the media source and processing logic. It is especially designed to be **flexible**, **customizable**, and easy to integrate into your existing media pipeline.
+This library provides **only the UI layer**, giving you full control over playback, timing, and processing logic. Whether you're using **ExoPlayer**, **FFmpeg**, or custom media handling, MediaTrimmer UI integrates as the frontend trimming interface.
 
 ---
 
-## ✨ Features (Alpha)
+## 🚧 Alpha Notice
 
-> 🚧 This project is in **early alpha** — APIs and behavior are subject to change.
+> ⚠️ This library is in **early alpha** and not yet production-ready.  
+> APIs, behaviors, and performance are subject to change.  
+> It has not undergone rigorous testing — feedback and contributions are welcome.
 
-- Minimal and flexible trimming UI
-- Jetpack Compose-native and fully themable
-- Integrates with your own media playback system (e.g., ExoPlayer)
-- Fully customizable handles, layout, and visual content
-- **Media-agnostic**: visualize your content however you like (waveform, thumbnails, etc.)
+---
 
+## ✨ Features
 
-## Installation
+| Feature                    | Description                                                                 |
+|---------------------------|-----------------------------------------------------------------------------|
+| 🧱 Compose-native UI       | Built entirely with Jetpack Compose                                         |
+| 🔈 Audio + 🎥 Video Support | Works with any media source, visualized through thumbnails or waveform      |
+| 🧩 Fully themable          | Customize layout, colors, handles, stroke, and visuals                      |
+| 🔗 Playback integration    | Syncs with ExoPlayer or other media engines                                 |
+| ⏳ Time-bound Trimming     | Interactive start/end selection with live state updates                     |
+| ❌ No media logic enforced | You implement your own trimming backend via FFmpeg or other tools          |
 
-To start using MediaTrimmer Compose UI, simply add the following dependency to your app-level build.gradle.kts file:  
+---
+
+## 🚀 Quick Start
+
+For simple audio trimming:
+
+```kotlin
+val trimmerState = rememberMediaTrimmerState()
+
+MediaTrimmer(state = trimmerState)
+```
+
+To customize visuals, use the `trackContent` slot:
+
+```kotlin
+MediaTrimmer(
+    state = trimmerState,
+    trackContent = {
+        MyCustomTrackRenderer(state = trimmerState)
+    },
+    colors = TrimmerDefaults.colors(
+        containerBackgroundColor = MaterialTheme.colorScheme.surface,
+        handleColor = Color.Red,
+    )
+)
+```
+
+For video trimming with thumbnails + ExoPlayer:
+
+```kotlin
+val player = ExoPlayer.Builder(context).build()
+// configure media item...
+
+val trimmerState = rememberMediaTrimmerStateWithPlayer(player)
+
+MediaTrimmer(
+    state = trimmerState,
+    trackContent = {
+        DefaultVideoThumbnails(
+            videoUri = yourVideoUri,
+            state = trimmerState
+        )
+    }
+)
+```
+
+---
+
+## 🖼️ Demo
+
+A full implementation is available inside the project:
+
+👉 [VideoTrimmerDemo.kt](https://github.com/AmjdAlhashede/MediaTrimmerUI/blob/master/app/src/main/java/io/github/mediatrimmer/demo/VideoTrimmerDemo.kt)   
+
+> 🎬 Demo video coming soon!
+
+--- 
+
+## 📦 Installation
+
+Add the dependency to your `build.gradle.kts`:
+
 ```kotlin
 implementation("io.github.amjdalhashede:mediatrimmer-compose-ui:1.0.0-alpha3")
-``` 
+```
 
-Or in Gradle Groovy DSL `build.gradle`:
+Or with Groovy DSL:
 
 ```groovy
 implementation 'io.github.amjdalhashede:mediatrimmer-compose-ui:1.0.0-alpha3'
 ```
 
+---
 
-## License: Apache License 2.0 
+## ⚠️ Important Notes
+
+- This library **does not perform actual media trimming**.  
+  You must implement your own processing logic using FFmpeg, MediaMuxer, or other tools.
+
+- Designed to be **modular and adaptable** for any pipeline or project.
+
+---
+
+## 📜 License
+
+Apache License 2.0  
 [See LICENSE file for details](./LICENSE)
+
+---
+
+## 🤝 Contributions
+
+Got ideas, bugs, or improvements?  
+Open an issue or pull request and help shape the future of this library.
+
