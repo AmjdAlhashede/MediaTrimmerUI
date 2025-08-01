@@ -15,8 +15,11 @@
  *
  */
 
-package io.github.mediatrimmer
+package io.github.mediatrimmer.demo
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.net.Uri
 import androidx.annotation.OptIn
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -43,6 +46,7 @@ import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -50,7 +54,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -78,11 +81,24 @@ import androidx.media3.ui.compose.PlayerSurface
 import androidx.media3.ui.compose.SURFACE_TYPE_SURFACE_VIEW
 import androidx.media3.ui.compose.modifiers.resizeWithContentScale
 import androidx.media3.ui.compose.state.rememberPresentationState
-import io.github.helper.VideoFrameExtractor
+import coil3.ImageLoader
+import coil3.compose.asPainter
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
+import coil3.request.allowHardware
+import coil3.size.Scale
+import coil3.video.VideoFrameDecoder
+import coil3.video.videoFrameMillis
+import io.github.mediatrimmer.PlayPauseButton
+import io.github.mediatrimmer.R
 import io.github.trimmer.MediaTrimmer
 import io.github.trimmer.TrimmerDefaults
 import io.github.trimmer.state.MediaTrimmerState
 import io.github.trimmer.state.rememberMediaTrimmerStateWithPlayer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 
 
 /**
@@ -162,21 +178,9 @@ fun VideoTrimmerDemo() {
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
-                ){
+                ) {
                     MediaTrimmer(
                         state = trimmerState,
-                        modifier = Modifier.weight(1f),
-                        colors = TrimmerDefaults.colors(
-                            containerBorderColor = Color.Transparent,
-                            containerBackgroundColor = MaterialTheme.colorScheme.surfaceContainer,
-                        ),
-                        trackContent = {
-                            DefaultVideoThumbnails(
-                                modifier = Modifier.fillMaxWidth(),
-                                videoUri = videoUri,
-                                state = trimmerState,
-                            )
-                        }
                     )
 
                     PlayPauseButton(
@@ -223,22 +227,19 @@ fun VideoTrimmerDemo() {
 @Composable
 fun DefaultVideoThumbnails(
     modifier: Modifier = Modifier,
-    videoUri: android.net.Uri,
+    videoUri: Uri,
     state: MediaTrimmerState,
     numberOfThumbnails: Int = 10,
     overlayColor: Color = Color.Black.copy(alpha = 0.5f),
 ) {
     val context = LocalContext.current
-    // <--- Change 1: Instantiate VideoFrameExtractor as a remembered class instance
-    val extractor =
-        remember { VideoFrameExtractor(context.applicationContext) } // Pass applicationContext
+    val extractor = remember { VideoFrameExtractor(context.applicationContext) }
 
-    // <--- Change 2: Now storing Painters
     val thumbnails = remember { mutableStateListOf<Painter>() }
     var isLoadingThumbnails by remember { mutableStateOf(true) }
 
     LaunchedEffect(videoUri, state.durationMs, numberOfThumbnails) {
-        if (state.durationMs > 0 && videoUri != android.net.Uri.EMPTY) {
+        if (state.durationMs > 0 && videoUri != Uri.EMPTY) {
             isLoadingThumbnails = true
             thumbnails.clear()
             // <--- Change 3: Call extractThumbnails on the instance
@@ -262,24 +263,16 @@ fun DefaultVideoThumbnails(
                     .fillMaxSize()
                     .background(Color.Gray.copy(alpha = 0.3f))
             ) {
-                // Consider adding a CircularProgressIndicator here
-            }
-        } else if (thumbnails.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Red.copy(alpha = 0.1f))
-            ) {
-                // Consider adding a Text("No Video Frames") here
+                CircularProgressIndicator()
             }
         } else {
             Row(
                 modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                thumbnails.forEach { painter -> // <--- Change 4: Iterate over Painters
+                thumbnails.forEach { painter ->
                     Image(
-                        painter = painter, // <--- Change 5: Use painter parameter directly
+                        painter = painter,
                         contentDescription = null,
                         modifier = Modifier
                             .weight(1f)
@@ -334,5 +327,59 @@ fun VideoPlayerWithPresentationState(
         if (presentationState.coverSurface) {
             Box(Modifier.background(Color.Black))
         }
+    }
+}
+
+
+class VideoFrameExtractor(private val context: Context) {
+
+    val imageLoader = ImageLoader.Builder(context)
+        .components {
+            add(VideoFrameDecoder.Factory())
+        }
+        .build()
+
+
+    /**
+     * Extracts a list of video frame thumbnails from a given video URI using Coil.
+     *
+     * @param context The application context.
+     * @param videoUri The URI of the video file.
+     * @param durationMs The total duration of the video in milliseconds.
+     * @param numberOfThumbnails The desired number of thumbnails to extract.
+     * @return A list of [Bitmap] thumbnails.
+     */
+    suspend fun extractThumbnails(
+        videoUri: Uri,
+        durationMs: Long,
+        numberOfThumbnails: Int,
+    ): List<Painter> = withContext(Dispatchers.IO) {
+        if (durationMs <= 0 || numberOfThumbnails <= 0) {
+            return@withContext emptyList()
+        }
+
+        val intervalMs = durationMs / numberOfThumbnails.toFloat()
+
+        val deferredBitmaps = (0 until numberOfThumbnails).map { i ->
+            async {
+                val timeMs = (i * intervalMs).toLong().coerceAtMost(durationMs - 1)
+                val request = ImageRequest.Builder(context)
+                    .data(videoUri)
+                    .videoFrameMillis(timeMs)
+                    .size(coil3.size.Size.ORIGINAL) // Or specify a fixed size: Size(width = 128, height = 128)
+                    .scale(Scale.FIT)
+                    .allowHardware(false)
+                    .build()
+
+                val result = imageLoader.execute(request)
+
+                if (result is SuccessResult) {
+                    (result.image.asPainter(context))
+                } else {
+                    null
+                }
+            }
+        }
+        deferredBitmaps.awaitAll().filterNotNull()
     }
 }
