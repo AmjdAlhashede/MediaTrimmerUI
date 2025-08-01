@@ -21,13 +21,13 @@ This library focuses purely on the **UI layer**, giving you full control over th
 
 To start using MediaTrimmer Compose UI, simply add the following dependency to your app-level build.gradle.kts file:  
 ```kotlin
-implementation("io.github.amjdalhashede:mediatrimmer-compose-ui:1.0.0-alpha2")
+implementation("io.github.amjdalhashede:mediatrimmer-compose-ui:1.0.0-alpha3")
 ``` 
 
 Or in Gradle Groovy DSL `build.gradle`:
 
 ```groovy
-implementation 'io.github.amjdalhashede:mediatrimmer-compose-ui:1.0.0-alpha2'
+implementation 'io.github.amjdalhashede:mediatrimmer-compose-ui:1.0.0-alpha3'
 ```
 
 
