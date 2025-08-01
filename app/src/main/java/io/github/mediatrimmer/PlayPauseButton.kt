@@ -17,9 +17,12 @@
 package io.github.mediatrimmer
 
 import androidx.annotation.OptIn
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.rounded.PauseCircle
 import androidx.compose.material.icons.rounded.Place
+import androidx.compose.material.icons.rounded.PlayCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -37,7 +40,8 @@ fun PlayPauseButton(player: Player, modifier: Modifier = Modifier) {
 
   IconButton(onClick = state::onClick, modifier = modifier, enabled = state.isEnabled) {
     Icon(
-      imageVector = if (state.showPlay) Icons.Default.PlayArrow else Icons.Rounded.Place,
+      modifier = Modifier.fillMaxSize(),
+      imageVector = if (state.showPlay) Icons.Rounded.PlayCircle else Icons.Rounded.PauseCircle,
       contentDescription = null
     )
   }

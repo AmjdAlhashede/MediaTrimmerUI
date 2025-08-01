@@ -16,10 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MediaTrimmerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val modifier = Modifier.padding(innerPadding)
-                    MediaTrimmerDemo()
-                }
+                VideoTrimmerDemo()
             }
         }
     }

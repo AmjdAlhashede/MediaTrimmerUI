@@ -43,7 +43,7 @@ internal fun TrimmerSurface(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(style.containerCornerRadius),
-        colors = CardDefaults.cardColors(containerColor = colors.containerBackgroundColor),
+        colors = CardDefaults.elevatedCardColors(containerColor = colors.containerBackgroundColor),
         border = BorderStroke(style.containerBorderWidth, colors.containerBorderColor),
     ) {
         Box(

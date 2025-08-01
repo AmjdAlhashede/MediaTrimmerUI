@@ -42,8 +42,7 @@ android {
 }
 
 dependencies {
-
-    implementation(libs.mediatrimmer.compose.ui)
+    implementation(project (":media-trimmer-compose-ui"))
     implementation(libs.bundles.media3.local)
     implementation(libs.bundles.coil3)
     implementation(libs.androidx.core.ktx)
@@ -54,6 +53,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.material.extended.icons)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

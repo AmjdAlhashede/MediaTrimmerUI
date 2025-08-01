@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -34,6 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 import io.github.trimmer.components.TrimmerHandles
 import io.github.trimmer.components.TrimmerOverlayAndPlayHead
 import io.github.trimmer.components.TrimmerSurface
@@ -72,74 +75,77 @@ fun MediaTrimmer(
     },
 ) {
 
-    var trackWidthPx by remember { mutableFloatStateOf(0f) }
-    TrimmerSurface(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(style.trackHeight + style.containerContentPadding * 2),
-        style = style,
-        colors = colors,
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(style.trackHeight)
-                .padding(style.containerContentPadding)
-                .onSizeChanged { size -> trackWidthPx = size.width.toFloat() }
-        ) {
-            val safeTrackWidthPx = if (trackWidthPx < 1f) 1f else trackWidthPx
+    CompositionLocalProvider(LocalLayoutDirection.provides(LayoutDirection.Ltr)) {
 
+        var trackWidthPx by remember { mutableFloatStateOf(0f) }
+        TrimmerSurface(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(style.trackHeight + style.containerContentPadding * 2),
+            style = style,
+            colors = colors,
+        ) {
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(style.selectionCornerRadius))
+                    .fillMaxWidth()
+                    .height(style.trackHeight)
+                    .padding(style.containerContentPadding)
+                    .onSizeChanged { size -> trackWidthPx = size.width.toFloat() }
             ) {
-                trackContent(state)
-            }
+                val safeTrackWidthPx = if (trackWidthPx < 1f) 1f else trackWidthPx
 
-
-            val startPx by remember(state.startMs, safeTrackWidthPx) {
-                derivedStateOf {
-                    if (state.durationMs == 0L) 0f
-                    else (state.startMs.toFloat() / state.durationMs) * safeTrackWidthPx
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(style.selectionCornerRadius))
+                ) {
+                    trackContent(state)
                 }
-            }
 
-            val endPx by remember(state.endMs, safeTrackWidthPx) {
-                derivedStateOf {
-                    if (state.durationMs == 0L) 0f
-                    (state.endMs.toFloat() / state.durationMs) * safeTrackWidthPx
+
+                val startPx by remember(state.startMs, safeTrackWidthPx) {
+                    derivedStateOf {
+                        if (state.durationMs == 0L) 0f
+                        else (state.startMs.toFloat() / state.durationMs) * safeTrackWidthPx
+                    }
                 }
-            }
 
-            val playHeadPx by remember(
-                state.progressMs,safeTrackWidthPx 
-            ) {
-                derivedStateOf {
-                    if (state.durationMs == 0L) return@derivedStateOf 0f
-                    (state.progressMs.toFloat() / state.durationMs) * safeTrackWidthPx
+                val endPx by remember(state.endMs, safeTrackWidthPx) {
+                    derivedStateOf {
+                        if (state.durationMs == 0L) 0f
+                        (state.endMs.toFloat() / state.durationMs) * safeTrackWidthPx
+                    }
                 }
+
+                val playHeadPx by remember(
+                    state.progressMs, safeTrackWidthPx
+                ) {
+                    derivedStateOf {
+                        if (state.durationMs == 0L) return@derivedStateOf 0f
+                        (state.progressMs.toFloat() / state.durationMs) * safeTrackWidthPx
+                    }
+                }
+
+                TrimmerOverlayAndPlayHead(
+                    startPx = startPx,
+                    endPx = endPx,
+                    playHeadPx = playHeadPx,
+                    colors = colors,
+                    style = style
+                )
+
+                TrimmerHandles(
+                    state = state,
+                    startPx = startPx,
+                    endPx = endPx,
+                    trackWidthPx = trackWidthPx,
+                    startHandle = startHandle,
+                    endHandle = endHandle,
+                    playHeadPx = playHeadPx,
+                    style = style,
+                    colors = colors
+                )
             }
-
-            TrimmerOverlayAndPlayHead(
-                startPx = startPx,
-                endPx = endPx,
-                playHeadPx = playHeadPx,
-                colors = colors,
-                style = style
-            )
-
-            TrimmerHandles(
-                state = state,
-                startPx = startPx,
-                endPx = endPx,
-                trackWidthPx = trackWidthPx,
-                startHandle = startHandle,
-                endHandle = endHandle,
-                playHeadPx = playHeadPx,
-                style = style,
-                colors = colors
-            )
         }
     }
-}
 
+}

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MediaTrimmer</string>
+    <string name="trim">Trim</string>
+    <string name="reset">Reset</string>
+    <string name="save">Save</string>
+    <string name="media_trimmer_title">MediaTrimmerUI Showcase</string>
+    <string name="media_trimmer_headline">Powerful &amp; Intuitive Video Trimming Library</string>
+    <string name="media_trimmer_desc">Smooth, customizable, and easy to integrate with Jetpack Compose.</string>
+
 </resources>
