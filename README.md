@@ -77,11 +77,21 @@ MediaTrimmer(
 
 A full implementation is available inside the project:
 
-👉 [VideoTrimmerDemo.kt](https://github.com/AmjdAlhashede/MediaTrimmerUI/blob/master/app/src/main/java/io/github/mediatrimmer/demo/VideoTrimmerDemo.kt)   
+👉 [VideoTrimmerDemo.kt](https://github.com/AmjdAlhashede/MediaTrimmerUI/blob/master/app/src/main/java/io/github/mediatrimmer/demo/VideoTrimmerDemo.kt)
 
 > 🎬 Demo video coming soon!
 
---- 
+---
+
+### Demo Showcase
+
+Here is how MediaTrimmerUI looks in action:
+
+![MediaTrimmerUI Screenshot](docs/demo-showcase.jpg)
+
+An intuitive trimming interface synced with ExoPlayer.  
+Customize handles, layout, and visuals to fit your app's needs.
+
 
 ## 📦 Installation
 
